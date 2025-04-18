@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +17,28 @@ class Product extends Model
         'cost_price' => 'decimal:2',
         'stock' => 'integer'
     ];
+
+    protected static function boot()
+    {
+         parent::boot();
+             static::saving(function ($product)
+             {
+                 if (empty($product->slug)) {
+                     $product->slug = Str::slug($product->name);
+                 }
+                 else {
+                     $originalName = $product->getOriginal('name');
+                     if ($originalName !== $product->name) {
+                         $product->slug = Str::slug($product->name);
+                     }
+                 }
+             });
+    }
+    
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image ? Storage::url($this->image) : null;
+    }
 
     // Relationships
     public function category()

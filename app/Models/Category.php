@@ -3,30 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Category extends Model
 {
-
     protected $fillable = ['name', 'slug', 'image', 'parent_id'];
 
     protected static function boot()
     {
-        parent::boot();
-            static::saving(function ($category)
-            {
-                if (empty($category->slug)) {
-                    $category->slug = Str::slug($category->name);
-                }
-                else {
-                    $originalName = $category->getOriginal('name');
-                    if ($originalName !== $category->name) {
-                        $category->slug = Str::slug($category->name);
-                    }
-                }
-            });
+         parent::boot();
+             static::saving(function ($category)
+             {
+                 if (empty($category->slug)) {
+                     $category->slug = Str::slug($category->name);
+                 }
+                 else {
+                     $originalName = $category->getOriginal('name');
+                     if ($originalName !== $category->name) {
+                         $category->slug = Str::slug($category->name);
+                     }
+                 }
+             });
     }
     
     public function getImageUrlAttribute(): ?string
