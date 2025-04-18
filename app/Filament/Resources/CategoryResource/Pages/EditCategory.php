@@ -29,7 +29,6 @@ class EditCategory extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        // Prevent circular parent-child relationship
         if ($data['parent_id'] == $this->record->id) {
             unset($data['parent_id']);
         }
