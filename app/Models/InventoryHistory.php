@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryHistory extends Model
 {
@@ -14,6 +15,17 @@ class InventoryHistory extends Model
         'quantity_change' => 'integer',
         'cost_price' => 'decimal:2'
     ];
+    
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($model) {
+            if (empty($model->user_id)) {
+                $model->user_id = Auth::id() ?? 1; // Default ke user ID 1 jika tidak ada user yang login
+            }
+        });
+    }
 
     // Relationships
     public function product()
